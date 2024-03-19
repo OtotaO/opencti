@@ -7580,6 +7580,8 @@ type Query {
   publicStixRelationships(uriKey: String!, widgetId: String!, startDate: DateTime, endDate: DateTime): StixRelationshipConnection
   deleteOperation(id: String!): DeleteOperation
   deleteOperations(first: Int, after: ID, orderBy: DeleteOperationOrdering, orderMode: OrderingMode, filters: FilterGroup, search: String): DeleteOperationConnection
+  supportPackage(id: String!): SupportPackage
+  supportPackages(first: Int, after: ID, orderBy: SupportPackageOrdering, orderMode: OrderingMode, filters: FilterGroup, search: String): SupportPackageConnection
 }
 
 type Subscription {
@@ -8349,6 +8351,9 @@ type Mutation {
   aiExplain(id: ID!, content: String!): String
   deleteOperationRestore(id: ID!): ID
   deleteOperationConfirm(id: ID!): ID
+  supportPackageAdd(input: SupportPackageAddInput!): SupportPackage
+  supportPackageForceZip(input: SupportPackageForceZipInput!): SupportPackage
+  supportPackageDelete(id: ID!): ID
 }
 
 type Channel implements BasicObject & StixObject & StixCoreObject & StixDomainObject {
@@ -11483,3 +11488,51 @@ type DeleteOperationEdge {
   cursor: String!
   node: DeleteOperation!
 }
+
+type SupportPackage implements InternalObject & BasicObject {
+  id: ID!
+  name: String!
+  standard_id: String!
+  entity_type: String!
+  parent_types: [String]!
+  created: DateTime!
+  package_status: PackageStatus!
+  package_url: String
+  package_upload_dir: String
+  nodes_status: [SupportNodeStatus]
+}
+
+type SupportPackageConnection {
+  pageInfo: PageInfo!
+  edges: [SupportPackageEdge!]!
+}
+
+type SupportNodeStatus {
+  node_id: String!
+  package_status: PackageStatus!
+}
+
+type SupportPackageEdge {
+  cursor: String!
+  node: SupportPackage!
+}
+
+enum PackageStatus {
+  IN_PROGRESS
+  READY
+  IN_ERROR
+}
+
+enum SupportPackageOrdering {
+  name
+}
+
+input SupportPackageAddInput {
+  name: name_String_NotNull_minLength_2!
+}
+
+input SupportPackageForceZipInput {
+  id: id_String_NotNull_minLength_2!
+}
+
+scalar id_String_NotNull_minLength_2
