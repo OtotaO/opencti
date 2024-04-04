@@ -1746,6 +1746,24 @@ const buildLocalMustFilter = async (validFilter) => {
             }
           };
         }
+      } else if (filterDefinition?.type === 'date') { // date filters: nil <-> (field doesn't exist) OR (date <= epoch) OR (date >= 5138)
+        valueFiltering = {
+          bool: {
+            should: [{
+              bool: {
+                must_not: {
+                  exists: {
+                    field: R.head(arrayKeys)
+                  }
+                }
+              }
+            },
+            { range: { [R.head(arrayKeys)]: { lte: '1970-01-01T01:00:00.000Z' } } },
+            { range: { [R.head(arrayKeys)]: { gte: '5138-11-16T09:46:40.000Z' } } }
+            ],
+            minimum_should_match: 1,
+          }
+        };
       }
       valuesFiltering.push(valueFiltering);
     }
@@ -1791,6 +1809,20 @@ const buildLocalMustFilter = async (validFilter) => {
             }
           };
         }
+      } else if (filterDefinition?.type === 'date') { // date filters: not_nil <-> (field exists) AND (date > epoch) AND (date < 5138)
+        valueFiltering = {
+          bool: {
+            should: [{
+              exists: {
+                field: R.head(arrayKeys)
+              }
+            },
+            { range: { [R.head(arrayKeys)]: { gt: '1970-01-01T01:00:00.000Z' } } },
+            { range: { [R.head(arrayKeys)]: { lt: '5138-11-16T09:46:40.000Z' } } }
+            ],
+            minimum_should_match: 3,
+          }
+        };
       }
       valuesFiltering.push(valueFiltering);
     }
@@ -1874,7 +1906,7 @@ const buildLocalMustFilter = async (validFilter) => {
         if (arrayKeys.length > 1) {
           throw UnsupportedError('Filter must have only one field', { keys: arrayKeys });
         }
-        valuesFiltering.push({ range: { [R.head(arrayKeys)]: { [operator]: values[i] } } });
+        valuesFiltering.push({ range: { [R.head(arrayKeys)]: { [operator]: values[i] } } }); // range operators
       }
     }
   }
