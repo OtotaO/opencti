@@ -61,6 +61,9 @@ const DeleteOperationPopover: React.FC<DeleteOperationPopoverProps> = ({ mainEnt
       onCompleted: () => {
         handleClose();
       },
+      updater: (store) => {
+        deleteNode(store, 'Pagination_deleteOperations', paginationOptions, mainEntityId);
+      },
     });
   };
 
