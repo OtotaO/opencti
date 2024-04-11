@@ -8,8 +8,14 @@ test('Create a new report page', async ({ page }) => {
   const reportPage = new ReportPage(page);
   const reportDetailsPage = new ReportDetailsPage(page);
   const reportForm = new ReportFormPage(page);
+
   await page.goto('/dashboard/analyses/reports');
   await reportPage.addNewReport();
+
+  await reportForm.fillNameInput('');
+  await reportForm.getPublicationDateInput().click();
+  await expect(page.getByText('This field is required')).toBeVisible();
+
   await reportForm.fillNameInput('Test e2e');
   await reportPage.getCreateReportButton().click();
   await reportPage.getItemFromList('Test e2e').click();
