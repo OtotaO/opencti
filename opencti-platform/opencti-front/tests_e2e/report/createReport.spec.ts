@@ -31,7 +31,8 @@ test('Create a new report page', async ({ page }) => {
   await reportForm.fillPublicationDateInput('2023-12-05 12:00 AM');
   await expect(page.getByText('The value must be a datetime (yyyy-MM-dd hh:mm (a|p)m)')).toBeHidden();
 
-  await reportForm.selectReportTypeInput('malware');
+  await reportForm.selectReportTypeOption('malware');
+  await expect(reportForm.getReportTypeOption('malware')).toBeVisible();
 
 /*  await reportPage.getCreateReportButton().click();
   await reportPage.getItemFromList('Test e2e').click();

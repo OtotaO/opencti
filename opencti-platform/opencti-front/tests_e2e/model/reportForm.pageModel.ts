@@ -1,6 +1,9 @@
 import { Page } from '@playwright/test';
+import SelectInputUtils from '../utils/selectInput.utils';
 
 export default class ReportFormPage {
+  private reportTypesSelect = new SelectInputUtils('Report types', this.page);
+
   constructor(private page: Page) {}
 
   getNameInput() {
@@ -12,7 +15,7 @@ export default class ReportFormPage {
   }
 
   getReportTypeInput() {
-    return this.page.getByLabel('Report types');
+    return this.page.getByRole('combobox', { name: 'Report types' });
   }
 
   async fillNameInput(input: string) {
@@ -31,11 +34,12 @@ export default class ReportFormPage {
     return this.page.keyboard.type(input);
   }
 
-  async selectReportTypeInput(input: string) {
-    await this.getReportTypeInput().selectOption(input);
-    /* const list = await this.page.locator('.MuiAutocomplete-popper');
-    return list.selectOption(input);
-    // return list.getByText(input).click(); */
+  async selectReportTypeOption(input: string) {
+    return this.reportTypesSelect.selectOption(input);
+  }
+
+  getReportTypeOption(input: string) {
+    return this.reportTypesSelect.getOption(input);
   }
 
   getCloseButton() {
