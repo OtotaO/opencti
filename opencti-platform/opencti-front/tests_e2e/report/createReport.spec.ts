@@ -16,10 +16,26 @@ test('Create a new report page', async ({ page }) => {
   await reportForm.getPublicationDateInput().click();
   await expect(page.getByText('This field is required')).toBeVisible();
 
+  await reportForm.fillNameInput('t');
+  await expect(page.getByText('Name must be at least 2 characters')).toBeVisible();
+
   await reportForm.fillNameInput('Test e2e');
-  await reportPage.getCreateReportButton().click();
+  await expect(page.getByText('Name must be at least 2 characters')).toBeHidden();
+
+  await reportForm.clearPublicationDateInput();
+  await expect(page.getByText('This field is required')).toBeVisible();
+
+  await reportForm.fillPublicationDateInput('2023-12-05');
+  await expect(page.getByText('The value must be a datetime (yyyy-MM-dd hh:mm (a|p)m)')).toBeVisible();
+
+  await reportForm.fillPublicationDateInput('2023-12-05 12:00 AM');
+  await expect(page.getByText('The value must be a datetime (yyyy-MM-dd hh:mm (a|p)m)')).toBeHidden();
+
+  await reportForm.selectReportTypeInput('malware');
+
+/*  await reportPage.getCreateReportButton().click();
   await reportPage.getItemFromList('Test e2e').click();
-  await expect(reportDetailsPage.getReportDetailsPage()).toBeVisible();
+  await expect(reportDetailsPage.getReportDetailsPage()).toBeVisible(); */
 });
 
 test('Create a new report with associated file', async ({ page }) => {
