@@ -143,6 +143,7 @@ const ContainerStixDomainObjectsLines: FunctionComponent<ContainerStixDomainObje
     nodePath: ['container', 'objects', 'pageInfo', 'globalCount'],
     setNumberOfElements,
   });
+  console.log("In lines: " + enableReferences);
   const { container } = data;
   const currentSelection = container?.objects?.edges ?? [];
   const selectWithoutInferred = currentSelection.filter((edge) => (edge?.types ?? ['manual']).includes('manual'));
@@ -170,6 +171,7 @@ const ContainerStixDomainObjectsLines: FunctionComponent<ContainerStixDomainObje
         deSelectedElements={deSelectedElements}
         selectAll={selectAll}
         onToggleEntity={onToggleEntity}
+        enableReferences={enableReferences}
       />
       {container && (
         <Security needs={[KNOWLEDGE_KNUPDATE]}>

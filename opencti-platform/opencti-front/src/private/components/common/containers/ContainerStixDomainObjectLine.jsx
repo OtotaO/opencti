@@ -85,6 +85,7 @@ const ContainerStixDomainObjectLineComponent = (props) => {
     deSelectedElements,
     selectAll,
     onToggleShiftEntity,
+    enableReferences,
     index,
   } = props;
   const classes = useStyles();
@@ -94,6 +95,7 @@ const ContainerStixDomainObjectLineComponent = (props) => {
   const isOnlyThroughInference = isThroughInference && !refTypes.includes('manual');
   const link = `${resolveLink(node.entity_type)}/${node.id}`;
   const linkAnalyses = `${link}/analyses`;
+  console.log("In line: " + enableReferences);
   return (
     <ListItem
       classes={{ root: classes.item }}
@@ -222,6 +224,7 @@ const ContainerStixDomainObjectLineComponent = (props) => {
             relationshipType="object"
             paginationKey="Pagination_objects"
             paginationOptions={paginationOptions}
+            enableReferences={enableReferences}
           />
         )}
       </ListItemSecondaryAction>
