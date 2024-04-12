@@ -1,13 +1,24 @@
 import { Locator, Page } from '@playwright/test';
 
+interface SelectInputUtilsOptions {
+  page: Page
+  multiple?: boolean
+}
+
 export default class SelectInputUtils {
-  private inputLocator : Locator;
+  private page: Page;
 
-  private parentLocator : Locator;
+  private multiple: boolean;
 
-  constructor(private label: string, private page: Page) {
-    this.inputLocator = page.getByRole('combobox', { name: label });
-    this.parentLocator = page.locator('div').filter({ has: this.inputLocator });
+  private inputLocator: Locator;
+
+  private parentLocator: Locator;
+
+  constructor(private label: string, { page, multiple = true }: SelectInputUtilsOptions) {
+    this.page = page;
+    this.multiple = multiple;
+    this.inputLocator = this.page.getByRole('combobox', { name: label });
+    this.parentLocator = this.page.locator('div').filter({ has: this.inputLocator });
   }
 
   async selectOption(option: string) {
@@ -18,6 +29,8 @@ export default class SelectInputUtils {
   }
 
   getOption(option: string) {
-    return this.parentLocator.getByRole('button', { name: option });
+    return this.multiple
+      ? this.parentLocator.getByRole('button', { name: option })
+      : this.inputLocator;
   }
 }

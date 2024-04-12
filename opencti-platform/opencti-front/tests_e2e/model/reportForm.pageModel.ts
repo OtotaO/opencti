@@ -2,7 +2,14 @@ import { Page } from '@playwright/test';
 import SelectInputUtils from '../utils/selectInput.utils';
 
 export default class ReportFormPage {
-  private reportTypesSelect = new SelectInputUtils('Report types', this.page);
+  private reportTypesSelect = new SelectInputUtils('Report types', {
+    page: this.page,
+  });
+
+  private reliabilitySelect = new SelectInputUtils('Reliability', {
+    page: this.page,
+    multiple: false,
+  });
 
   constructor(private page: Page) {}
 
@@ -12,10 +19,6 @@ export default class ReportFormPage {
 
   getPublicationDateInput() {
     return this.page.getByLabel('Publication date');
-  }
-
-  getReportTypeInput() {
-    return this.page.getByRole('combobox', { name: 'Report types' });
   }
 
   async fillNameInput(input: string) {
@@ -40,6 +43,14 @@ export default class ReportFormPage {
 
   getReportTypeOption(input: string) {
     return this.reportTypesSelect.getOption(input);
+  }
+
+  async selectReliabilityOption(input: string) {
+    return this.reliabilitySelect.selectOption(input);
+  }
+
+  getReliabilityOption(input: string) {
+    return this.reliabilitySelect.getOption(input);
   }
 
   getCloseButton() {
