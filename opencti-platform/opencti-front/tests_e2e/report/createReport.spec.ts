@@ -40,6 +40,42 @@ test('Create a new report', async ({ page }) => {
   await reportForm.selectReliabilityOption('C - Fairly reliable');
   await expect(reportForm.getReliabilityOption('C - Fairly reliable')).toBeVisible();
 
+  /*  // Confidence level
+  await reportForm.fillConfidenceLevelInput('80');
+  await expect(reportForm.getConfidenceLevelOption('- Confirmed by other sources')).toBeVisible(); */
+
+  // Description
+  await reportForm.fillDescriptionInput('Test e2e Description');
+  await expect(page.getByText('Test e2e Description')).toBeVisible();
+
+  // Content
+  await reportForm.fillContentInput('This is a Test e2e content');
+  await expect(page.getByText('This is a Test e2e content')).toBeVisible();
+
+  // Assignees type
+  await reportForm.selectAssigneeseOption('admin');
+  await expect(reportForm.getAssigneesOption('admin')).toBeVisible();
+
+  /*  // Participants type
+  await reportForm.selectParticipantsOption('admin');
+  await expect(reportForm.getParticipantsOption('admin')).toBeVisible(); */
+
+  // Author type
+  await reportForm.selectAuthorOption('Allied Universal');
+  await expect(reportForm.getAuthorOption('Allied Universal')).toBeVisible();
+
+  // Labels type
+  await reportForm.selectLabelsOption('campaign');
+  await expect(reportForm.getLabelsOption('campaign')).toBeVisible();
+
+  // Markings type
+  await reportForm.selectMarkingsOption('PAP:CLEAR');
+  await expect(reportForm.getMarkingsOption('PAP:CLEAR')).toBeVisible();
+
+  /*  // External references type
+  await reportForm.selectExternalReferenceslOption('malware');
+  await expect(reportForm.getExternalReferenceslOption('malware')).toBeVisible(); */
+
   // ---------
   // endregion
 

@@ -135,6 +135,7 @@ const InputSliderField: FunctionComponent<InputSliderFieldProps & FieldProps> = 
           <Select
             fullWidth
             labelId={name}
+            label={`select_${label}`}
             value={currentLevel.level.value?.toString() ?? ''}
             onChange={(event) => setFieldValue(name, event.target.value)}
             disabled={disabled}
