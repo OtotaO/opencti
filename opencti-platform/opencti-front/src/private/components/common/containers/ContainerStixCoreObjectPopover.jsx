@@ -277,7 +277,6 @@ class ContainerStixCoreObjectPopover extends Component {
 
   render() {
     const { classes, t, theme, contentMappingData, mapping, containerId, enableReferences } = this.props;
-    console.log(enableReferences);
     const { referenceDialogOpened } = this.state;
     return (
       <div className={classes.container}>

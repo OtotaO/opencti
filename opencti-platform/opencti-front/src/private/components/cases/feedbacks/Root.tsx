@@ -23,8 +23,8 @@ import StixDomainObjectContent from '../../common/stix_domain_objects/StixDomain
 import Feedback from './Feedback';
 import { useFormatter } from '../../../../components/i18n';
 import Breadcrumbs from '../../../../components/Breadcrumbs';
-import {useIsEnforceReference} from "../../../../utils/hooks/useEntitySettings";
-import useGranted, {BYPASSREFERENCE} from "../../../../utils/hooks/useGranted";
+import { useIsEnforceReference } from '../../../../utils/hooks/useEntitySettings';
+import useGranted, { BYPASSREFERENCE } from '../../../../utils/hooks/useGranted';
 
 const subscription = graphql`
   subscription RootFeedbackSubscription($id: ID!) {
