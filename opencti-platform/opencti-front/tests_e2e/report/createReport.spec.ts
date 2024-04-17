@@ -53,7 +53,7 @@ test('Create a new report', async ({ page }) => {
   await expect(page.getByText('This is a Test e2e content')).toBeVisible();
 
   // Assignees type
-  await reportForm.selectAssigneeseOption('admin');
+  await reportForm.selectAssigneesOption('admin');
   await expect(reportForm.getAssigneesOption('admin')).toBeVisible();
 
   /*  // Participants type
@@ -73,8 +73,8 @@ test('Create a new report', async ({ page }) => {
   await expect(reportForm.getMarkingsOption('PAP:CLEAR')).toBeVisible();
 
   /*  // External references type
-  await reportForm.selectExternalReferenceslOption('malware');
-  await expect(reportForm.getExternalReferenceslOption('malware')).toBeVisible(); */
+  await reportForm.selectExternalReferencesOption('malware');
+  await expect(reportForm.getExternalReferencesOption('malware')).toBeVisible(); */
 
   // ---------
   // endregion

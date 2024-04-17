@@ -120,7 +120,7 @@ export default class ReportFormPage {
     return this.getContentInput().fill(input);
   }
 
-  async selectAssigneeseOption(input: string) {
+  async selectAssigneesOption(input: string) {
     return this.assigneesSelect.selectOption(input);
   }
 
@@ -160,11 +160,11 @@ export default class ReportFormPage {
     return this.markingsSelect.getOption(input);
   }
 
-  async selectExternalReferenceslOption(input: string) {
+  async selectExternalReferencesOption(input: string) {
     return this.externalReferencesSelect.selectOption(input);
   }
 
-  getExternalReferenceslOption(input: string) {
+  getExternalReferencesOption(input: string) {
     return this.externalReferencesSelect.getOption(input);
   }
 
