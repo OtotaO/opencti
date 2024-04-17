@@ -56,6 +56,7 @@ const ConfidenceField: FunctionComponent<ConfidenceFieldProps> = ({
       icon={false}
       variant="outlined"
       style={{ position: 'relative' }}
+      aria-label={finalLabel}
     >
       <Field
         component={InputSliderField}

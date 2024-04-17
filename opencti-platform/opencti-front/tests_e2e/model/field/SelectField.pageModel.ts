@@ -1,11 +1,11 @@
 import { Locator, Page } from '@playwright/test';
 
-interface SelectInputUtilsOptions {
+interface SelectFieldPageModelOptions {
   page: Page
   multiple?: boolean
 }
 
-export default class SelectInputUtils {
+export default class SelectFieldPageModel {
   private page: Page;
 
   private multiple: boolean;
@@ -14,7 +14,7 @@ export default class SelectInputUtils {
 
   private parentLocator: Locator;
 
-  constructor(private label: string, { page, multiple = true }: SelectInputUtilsOptions) {
+  constructor(private label: string, { page, multiple = true }: SelectFieldPageModelOptions) {
     this.page = page;
     this.multiple = multiple;
     this.inputLocator = this.page.getByRole('combobox', { name: label });
@@ -30,7 +30,7 @@ export default class SelectInputUtils {
 
   getOption(option: string) {
     return this.multiple
-      ? this.parentLocator.getByRole('button', { name: option })
+      ? this.parentLocator.getByRole('button', { name: option, exact: true })
       : this.inputLocator;
   }
 }

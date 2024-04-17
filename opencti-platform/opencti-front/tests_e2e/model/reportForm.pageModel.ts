@@ -1,50 +1,48 @@
 import { Page } from '@playwright/test';
-import SelectInputUtils from '../utils/selectInput.utils';
+import SelectFieldPageModel from './field/SelectField.pageModel';
+import ConfidenceFieldPageModel from './field/ConfidenceField.pageModel';
 
 export default class ReportFormPage {
-  private reportTypesSelect = new SelectInputUtils('Report types', {
+  private reportTypesSelect = new SelectFieldPageModel('Report types', {
     page: this.page,
   });
 
-  private reliabilitySelect = new SelectInputUtils('Reliability', {
+  private reliabilitySelect = new SelectFieldPageModel('Reliability', {
     page: this.page,
     multiple: false,
   });
 
-  private confidenceLevelSelect = new SelectInputUtils('select_Confidence level', {
+  private assigneesSelect = new SelectFieldPageModel('Assignee(s)', {
+    page: this.page,
+    multiple: true,
+  });
+
+  private participantsSelect = new SelectFieldPageModel('Participant(s)', {
+    page: this.page,
+    multiple: true,
+  });
+
+  private authorSelect = new SelectFieldPageModel('Author', {
     page: this.page,
     multiple: false,
   });
 
-  private assigneesSelect = new SelectInputUtils('Assignee(s)', {
+  private labelsSelect = new SelectFieldPageModel('Labels', {
     page: this.page,
     multiple: true,
   });
 
-  private participantsSelect = new SelectInputUtils('Participant(s)', {
+  private markingsSelect = new SelectFieldPageModel('Markings', {
     page: this.page,
     multiple: true,
   });
 
-  private authorSelect = new SelectInputUtils('Author', {
-    page: this.page,
-    multiple: false,
-  });
-
-  private labelsSelect = new SelectInputUtils('Labels', {
+  private externalReferencesSelect = new SelectFieldPageModel('External references', {
     page: this.page,
     multiple: true,
   });
 
-  private markingsSelect = new SelectInputUtils('Markings', {
-    page: this.page,
-    multiple: true,
-  });
-
-  private externalReferencesSelect = new SelectInputUtils('External references', {
-    page: this.page,
-    multiple: true,
-  });
+  confidenceLevelField = new ConfidenceFieldPageModel('Confidence level', this.page);
 
   constructor(private page: Page) {}
 
@@ -54,10 +52,6 @@ export default class ReportFormPage {
 
   getPublicationDateInput() {
     return this.page.getByLabel('Publication date');
-  }
-
-  getConfidenceLevelInput() {
-    return this.page.getByLabel('Confidence level', { exact: true });
   }
 
   getDescriptionInput() {
@@ -98,15 +92,6 @@ export default class ReportFormPage {
 
   getReliabilityOption(input: string) {
     return this.reliabilitySelect.getOption(input);
-  }
-
-  getConfidenceLevelOption(input: string) {
-    return this.confidenceLevelSelect.getOption(input);
-  }
-
-  async fillConfidenceLevelInput(input: string) {
-    await this.getConfidenceLevelInput().click();
-    return this.getConfidenceLevelInput().fill(input);
   }
 
   async fillDescriptionInput(input: string) {
