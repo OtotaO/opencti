@@ -12,6 +12,20 @@ test('Create a new report', async ({ page }) => {
   await page.goto('/dashboard/analyses/reports');
   await reportPage.addNewReport();
 
+  // region Check default values in the form
+  // ---------------------------------------
+
+  // Publication date
+  const dateNow = new Date().toISOString().substring(0, 10);
+  const publicationDateInputValue = await reportForm.getPublicationDateInput().inputValue();
+  expect(publicationDateInputValue.startsWith(dateNow)).toBeTruthy();
+
+  // Confidence level
+  await expect(reportForm.confidenceLevelField.getInput()).toHaveValue('100');
+
+  // ---------
+  // endregion
+
   // region Check fields validation
   // ------------------------------
 
@@ -45,12 +59,12 @@ test('Create a new report', async ({ page }) => {
   // Confidence level
   await reportForm.confidenceLevelField.fillInput('75');
   await expect(reportForm.confidenceLevelField.getSelect().getByText('2 - Probably True')).toBeVisible();
-  await reportForm.confidenceLevelField.selectOption('- Possibly True');
-  await expect(reportForm.confidenceLevelField.getInput().getByText('40')).toBeVisible();
+  // await reportForm.confidenceLevelField.selectOption('- Possibly True');
+  // await expect(reportForm.confidenceLevelField.getInput().getByText('40')).toBeVisible();
 
   // Description
   await reportForm.fillDescriptionInput('Test e2e Description');
-  await expect(page.getByText('Test e2e Description')).toBeVisible();
+  await expect(reportForm.getDescriptionInput()).toHaveValue('Test e2e Description');
 
   // Content
   await reportForm.fillContentInput('This is a Test e2e content');

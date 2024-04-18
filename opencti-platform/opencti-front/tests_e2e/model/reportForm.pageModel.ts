@@ -3,41 +3,41 @@ import SelectFieldPageModel from './field/SelectField.pageModel';
 import ConfidenceFieldPageModel from './field/ConfidenceField.pageModel';
 
 export default class ReportFormPage {
-  private reportTypesSelect = new SelectFieldPageModel('Report types', {
+  reportTypesSelect = new SelectFieldPageModel('Report types', {
     page: this.page,
   });
 
-  private reliabilitySelect = new SelectFieldPageModel('Reliability', {
-    page: this.page,
-    multiple: false,
-  });
-
-  private assigneesSelect = new SelectFieldPageModel('Assignee(s)', {
-    page: this.page,
-    multiple: true,
-  });
-
-  private participantsSelect = new SelectFieldPageModel('Participant(s)', {
-    page: this.page,
-    multiple: true,
-  });
-
-  private authorSelect = new SelectFieldPageModel('Author', {
+  reliabilitySelect = new SelectFieldPageModel('Reliability', {
     page: this.page,
     multiple: false,
   });
 
-  private labelsSelect = new SelectFieldPageModel('Labels', {
+  assigneesSelect = new SelectFieldPageModel('Assignee(s)', {
     page: this.page,
     multiple: true,
   });
 
-  private markingsSelect = new SelectFieldPageModel('Markings', {
+  participantsSelect = new SelectFieldPageModel('Participant(s)', {
     page: this.page,
     multiple: true,
   });
 
-  private externalReferencesSelect = new SelectFieldPageModel('External references', {
+  authorSelect = new SelectFieldPageModel('Author', {
+    page: this.page,
+    multiple: false,
+  });
+
+  labelsSelect = new SelectFieldPageModel('Labels', {
+    page: this.page,
+    multiple: true,
+  });
+
+  markingsSelect = new SelectFieldPageModel('Markings', {
+    page: this.page,
+    multiple: true,
+  });
+
+  externalReferencesSelect = new SelectFieldPageModel('External references', {
     page: this.page,
     multiple: true,
   });
@@ -78,22 +78,6 @@ export default class ReportFormPage {
     return this.page.keyboard.type(input);
   }
 
-  async selectReportTypeOption(input: string) {
-    return this.reportTypesSelect.selectOption(input);
-  }
-
-  getReportTypeOption(input: string) {
-    return this.reportTypesSelect.getOption(input);
-  }
-
-  async selectReliabilityOption(input: string) {
-    return this.reliabilitySelect.selectOption(input);
-  }
-
-  getReliabilityOption(input: string) {
-    return this.reliabilitySelect.getOption(input);
-  }
-
   async fillDescriptionInput(input: string) {
     await this.getDescriptionInput().click();
     return this.getDescriptionInput().fill(input);
@@ -103,54 +87,6 @@ export default class ReportFormPage {
     await this.getContentInput().click();
     await this.getContentInput().clear();
     return this.getContentInput().fill(input);
-  }
-
-  async selectAssigneesOption(input: string) {
-    return this.assigneesSelect.selectOption(input);
-  }
-
-  getAssigneesOption(input: string) {
-    return this.assigneesSelect.getOption(input);
-  }
-
-  async selectParticipantsOption(input: string) {
-    return this.participantsSelect.selectOption(input);
-  }
-
-  getParticipantsOption(input: string) {
-    return this.participantsSelect.getOption(input);
-  }
-
-  async selectAuthorOption(input: string) {
-    return this.authorSelect.selectOption(input);
-  }
-
-  getAuthorOption(input: string) {
-    return this.authorSelect.getOption(input);
-  }
-
-  async selectLabelsOption(input: string) {
-    return this.labelsSelect.selectOption(input);
-  }
-
-  getLabelsOption(input: string) {
-    return this.labelsSelect.getOption(input);
-  }
-
-  async selectMarkingsOption(input: string) {
-    return this.markingsSelect.selectOption(input);
-  }
-
-  getMarkingsOption(input: string) {
-    return this.markingsSelect.getOption(input);
-  }
-
-  async selectExternalReferencesOption(input: string) {
-    return this.externalReferencesSelect.selectOption(input);
-  }
-
-  getExternalReferencesOption(input: string) {
-    return this.externalReferencesSelect.getOption(input);
   }
 
   getCloseButton() {
