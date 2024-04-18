@@ -752,10 +752,10 @@ type SynchronizerConnection {
 }
 
 input SynchronizerAddInput {
-  name: name_String_NotNull_minLength_2!
-  uri: uri_String_NotNull_minLength_2!
+  name: String!
+  uri: String!
   token: String
-  stream_id: stream_id_String_NotNull_minLength_2!
+  stream_id: String!
   user_id: String
   recover: DateTime
   current_state_date: DateTime
@@ -764,12 +764,6 @@ input SynchronizerAddInput {
   ssl_verify: Boolean
   synchronized: Boolean
 }
-
-scalar name_String_NotNull_minLength_2
-
-scalar uri_String_NotNull_minLength_2
-
-scalar stream_id_String_NotNull_minLength_2
 
 input SynchronizerFetchInput {
   uri: String!
@@ -1064,10 +1058,8 @@ input QueryTaskAddInput {
 input RetentionRuleAddInput {
   name: String!
   filters: String!
-  max_retention: max_retention_Int_NotNull_min_1!
+  max_retention: Int!
 }
-
-scalar max_retention_Int_NotNull_min_1
 
 type RetentionRule {
   id: ID!
@@ -1522,8 +1514,8 @@ type UserSession {
 }
 
 input UserAddInput {
-  user_email: user_email_String_NotNull_minLength_5_format_email!
-  name: name_String_NotNull_minLength_2!
+  user_email: String!
+  name: String!
   password: String!
   firstname: String
   lastname: String
@@ -1539,8 +1531,6 @@ input UserAddInput {
   groups: [ID!]
   user_confidence_level: ConfidenceLevelInput
 }
-
-scalar user_email_String_NotNull_minLength_5_format_email
 
 input ConfidenceLevelInput {
   max_confidence: Int
@@ -1967,7 +1957,7 @@ type ExternalReference implements BasicObject & StixObject & StixMetaObject {
 input ExternalReferenceAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  source_name: source_name_String_NotNull_minLength_2!
+  source_name: String!
   description: String
   url: String
   hash: String
@@ -1978,8 +1968,6 @@ input ExternalReferenceAddInput {
   clientMutationId: String
   update: Boolean
 }
-
-scalar source_name_String_NotNull_minLength_2
 
 enum KillChainPhasesOrdering {
   x_opencti_order
@@ -2219,7 +2207,7 @@ interface StixDomainObject {
 input StixDomainObjectAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   confidence: Int
   pattern_type: String
@@ -2325,7 +2313,7 @@ type AttackPattern implements BasicObject & StixObject & StixCoreObject & StixDo
 input AttackPatternAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   aliases: [String]
   revoked: Boolean
@@ -2430,7 +2418,7 @@ type Campaign implements BasicObject & StixObject & StixCoreObject & StixDomainO
 input CampaignAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   aliases: [String]
   revoked: Boolean
@@ -2604,7 +2592,7 @@ input NoteAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
   attribute_abstract: String
-  content: content_String_NotNull_minLength_2!
+  content: String!
   authors: [String]
   note_types: [String]
   likelihood: Int
@@ -2625,13 +2613,11 @@ input NoteAddInput {
   file: Upload
 }
 
-scalar content_String_NotNull_minLength_2
-
 input NoteUserAddInput {
   stix_id: String
   x_opencti_stix_ids: [String]
   attribute_abstract: String
-  content: content_String_NotNull_minLength_2!
+  content: String!
   note_types: [String]
   likelihood: Int
   revoked: Boolean
@@ -2957,7 +2943,7 @@ type Report implements BasicObject & StixObject & StixCoreObject & StixDomainObj
 input ReportAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   content: String
   content_mapping: String
@@ -3063,7 +3049,7 @@ type CourseOfAction implements BasicObject & StixObject & StixCoreObject & StixD
 input CourseOfActionAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   x_opencti_aliases: [String]
   x_mitre_id: String
@@ -3271,7 +3257,7 @@ type Individual implements BasicObject & StixObject & StixCoreObject & StixDomai
 input IndividualAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   contact_information: String
   roles: [String]
@@ -3379,7 +3365,7 @@ type Sector implements BasicObject & StixObject & StixCoreObject & StixDomainObj
 input SectorAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   contact_information: String
   roles: [String]
@@ -3481,7 +3467,7 @@ type System implements BasicObject & StixObject & StixCoreObject & StixDomainObj
 input SystemAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   contact_information: String
   roles: [String]
@@ -3589,7 +3575,7 @@ type Infrastructure implements BasicObject & StixObject & StixCoreObject & StixD
 input InfrastructureAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   aliases: [String]
   infrastructure_types: [String]
@@ -3694,7 +3680,7 @@ type IntrusionSet implements BasicObject & StixObject & StixCoreObject & StixDom
 input IntrusionSetAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   aliases: [String]
   first_seen: DateTime
@@ -3902,7 +3888,7 @@ type Position implements BasicObject & StixObject & StixCoreObject & StixDomainO
 input PositionAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   latitude: Float
   longitude: Float
@@ -4008,7 +3994,7 @@ type City implements BasicObject & StixObject & StixCoreObject & StixDomainObjec
 input CityAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   latitude: Float
   longitude: Float
@@ -4108,7 +4094,7 @@ type Country implements BasicObject & StixObject & StixCoreObject & StixDomainOb
 input CountryAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   latitude: Float
   longitude: Float
@@ -4210,7 +4196,7 @@ type Region implements BasicObject & StixObject & StixCoreObject & StixDomainObj
 input RegionAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   latitude: Float
   longitude: Float
@@ -4320,7 +4306,7 @@ type Malware implements BasicObject & StixObject & StixCoreObject & StixDomainOb
 input MalwareAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   malware_types: [String]
   aliases: [String]
@@ -4510,7 +4496,7 @@ type ThreatActorGroup implements BasicObject & StixObject & StixCoreObject & Sti
 input ThreatActorGroupAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   aliases: [String]
   threat_actor_types: [String]
@@ -4618,7 +4604,7 @@ type Tool implements BasicObject & StixObject & StixCoreObject & StixDomainObjec
 input ToolAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   aliases: [String]
   tool_types: [String]
@@ -4726,7 +4712,7 @@ type Vulnerability implements BasicObject & StixObject & StixCoreObject & StixDo
 input VulnerabilityAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   x_opencti_aliases: [String]
   x_opencti_cvss_base_score: Float
@@ -4841,7 +4827,7 @@ type Incident implements BasicObject & StixObject & StixCoreObject & StixDomainO
 input IncidentAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   confidence: Int
   revoked: Boolean
@@ -5255,13 +5241,9 @@ input EmailMimePartTypeAddInput {
 }
 
 input HashInput {
-  algorithm: algorithm_String_NotNull_minLength_3!
-  hash: hash_String_NotNull_minLength_5!
+  algorithm: String!
+  hash: String!
 }
-
-scalar algorithm_String_NotNull_minLength_3
-
-scalar hash_String_NotNull_minLength_5
 
 type Hash {
   algorithm: String!
@@ -8373,7 +8355,7 @@ type ChannelEdge {
 input ChannelAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   channel_types: [String]
   aliases: [String]
@@ -8468,7 +8450,7 @@ type LanguageEdge {
 input LanguageAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   aliases: [String]
   confidence: Int
@@ -8567,7 +8549,7 @@ type EventEdge {
 input EventAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   event_types: [String!]
   start_time: DateTime
@@ -8671,11 +8653,11 @@ type GroupingEdge {
 input GroupingAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   content: String
   content_mapping: String
-  context: context_String_NotNull_minLength_2!
+  context: String!
   x_opencti_aliases: [String]
   revoked: Boolean
   lang: String
@@ -8693,8 +8675,6 @@ input GroupingAddInput {
   update: Boolean
   file: Upload
 }
-
-scalar context_String_NotNull_minLength_2
 
 type Narrative implements BasicObject & StixCoreObject & StixDomainObject & StixObject {
   id: ID!
@@ -8777,7 +8757,7 @@ type NarrativeEdge {
 input NarrativeAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   narrative_types: [String!]
   aliases: [String]
@@ -8829,7 +8809,7 @@ enum TriggerEventType {
 }
 
 input TriggerLiveAddInput {
-  name: name_String_NotNull_minLength_1!
+  name: String!
   description: String
   event_types: [TriggerEventType!]!
   notifiers: [StixRef!]
@@ -8838,10 +8818,8 @@ input TriggerLiveAddInput {
   recipients: [String!]
 }
 
-scalar name_String_NotNull_minLength_1
-
 input TriggerDigestAddInput {
-  name: name_String_NotNull_minLength_1!
+  name: String!
   description: String
   trigger_ids: [String!]!
   period: DigestPeriod!
@@ -8894,7 +8872,7 @@ enum TriggerActivityEventType {
 }
 
 input TriggerActivityLiveAddInput {
-  name: name_String_NotNull_minLength_1!
+  name: String!
   description: String
   notifiers: [StixRef!]
   filters: String
@@ -8902,7 +8880,7 @@ input TriggerActivityLiveAddInput {
 }
 
 input TriggerActivityDigestAddInput {
-  name: name_String_NotNull_minLength_1!
+  name: String!
   description: String
   trigger_ids: [String!]!
   period: DigestPeriod!
@@ -9046,7 +9024,7 @@ input DataComponentAddInput {
   modified: DateTime
   clientMutationId: String
   update: Boolean
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   aliases: [String]
   dataSource: String
@@ -9143,7 +9121,7 @@ input DataSourceAddInput {
   modified: DateTime
   clientMutationId: String
   update: Boolean
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   aliases: [String]
   x_mitre_platforms: [String!]
@@ -9256,7 +9234,7 @@ type VocabularyEdge {
 input VocabularyAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_1!
+  name: String!
   description: String
   category: VocabularyCategory!
   order: Int
@@ -9346,7 +9324,7 @@ type AdministrativeAreaEdge {
 input AdministrativeAreaAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   latitude: Float
   longitude: Float
@@ -9449,7 +9427,7 @@ type TaskConnection {
 }
 
 input TaskAddInput {
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   created: DateTime
   due_date: DateTime
@@ -9496,7 +9474,7 @@ type TaskTemplateEdge {
 }
 
 input TaskTemplateAddInput {
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
 }
 
@@ -9610,7 +9588,7 @@ type CaseTemplateEdge {
 }
 
 input CaseTemplateAddInput {
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   created: DateTime
   tasks: [StixRef!]!
@@ -9707,7 +9685,7 @@ type CaseIncidentEdge {
 input CaseIncidentAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   severity: String
   priority: String
   description: String
@@ -9823,7 +9801,7 @@ type CaseRfiEdge {
 input CaseRfiAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   content: String
   content_mapping: String
@@ -9940,7 +9918,7 @@ type CaseRftEdge {
 input CaseRftAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   content: String
   content_mapping: String
@@ -10055,7 +10033,7 @@ type FeedbackEdge {
 input FeedbackAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   content: String
   content_mapping: String
@@ -10396,7 +10374,7 @@ input NotifierTestInput {
 }
 
 input NotifierAddInput {
-  name: name_String_NotNull_minLength_1!
+  name: String!
   description: String
   notifier_connector_id: String!
   notifier_configuration: String!
@@ -10511,7 +10489,7 @@ type ThreatActorIndividualEdge {
 input ThreatActorIndividualAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   aliases: [String]
   threat_actor_types: [String]
@@ -10618,7 +10596,7 @@ type PlaybookEdge {
 }
 
 input PlaybookAddInput {
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
 }
 
@@ -10676,9 +10654,9 @@ type IngestionRssEdge {
 }
 
 input IngestionRssAddInput {
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
-  uri: uri_String_NotNull_minLength_5!
+  uri: String!
   current_state_date: DateTime
   ingestion_running: Boolean
   user_id: String
@@ -10686,8 +10664,6 @@ input IngestionRssAddInput {
   object_marking_refs: [String!]
   report_types: [String!]
 }
-
-scalar uri_String_NotNull_minLength_5
 
 enum TaxiiVersion {
   v1
@@ -10742,19 +10718,17 @@ type IngestionTaxiiEdge {
 }
 
 input IngestionTaxiiAddInput {
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   version: TaxiiVersion!
   authentication_type: TaxiiAuthType!
   authentication_value: String
-  uri: uri_String_NotNull_minLength_5!
-  collection: collection_String_NotNull_minLength_5!
+  uri: String!
+  collection: String!
   added_after_start: DateTime
   ingestion_running: Boolean
   user_id: String
 }
-
-scalar collection_String_NotNull_minLength_5
 
 enum CsvAuthType {
   none
@@ -10802,12 +10776,12 @@ type IngestionCsvEdge {
 }
 
 input IngestionCsvAddInput {
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   authentication_type: CsvAuthType!
   authentication_value: String
   current_state_date: DateTime
-  uri: uri_String_NotNull_minLength_5!
+  uri: String!
   csv_mapper_id: String!
   ingestion_running: Boolean
   user_id: String!
@@ -10941,7 +10915,7 @@ input IndicatorAddInput {
   pattern_type: String!
   pattern_version: String
   pattern: String!
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   indicator_types: [String!]
   valid_from: DateTime
@@ -11010,7 +10984,7 @@ type DecayRuleEdge {
 }
 
 input DecayRuleAddInput {
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   order: Int!
   active: Boolean!
@@ -11110,7 +11084,7 @@ type OrganizationEdge {
 input OrganizationAddInput {
   stix_id: StixId
   x_opencti_stix_ids: [StixId]
-  name: name_String_NotNull_minLength_2!
+  name: String!
   description: String
   contact_information: String
   roles: [String]
@@ -11305,7 +11279,7 @@ input CsvMapperRepresentationInput {
 }
 
 input CsvMapperAddInput {
-  name: name_String_NotNull_minLength_2!
+  name: String!
   has_header: Boolean!
   separator: String!
   representations: String!
