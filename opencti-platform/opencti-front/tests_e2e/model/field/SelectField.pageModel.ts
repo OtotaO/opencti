@@ -18,7 +18,7 @@ export default class SelectFieldPageModel {
     this.page = page;
     this.multiple = multiple;
     this.inputLocator = this.page.getByRole('combobox', { name: label });
-    this.parentLocator = this.page.locator('div').filter({ has: this.inputLocator });
+    this.parentLocator = this.inputLocator.locator('..');
   }
 
   async selectOption(option: string) {
