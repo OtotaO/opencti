@@ -6,7 +6,7 @@ import ReportDetailsPage from '../model/reportDetails.pageModel';
 import ReportFormPage from '../model/reportForm.pageModel';
 import fakeDate from '../utils';
 
-test('Create a new report', async ({ page }) => {
+test('Report CRUD', async ({ page }) => {
   await fakeDate(page, 'April 1 2024 12:00:00');
 
   const reportPage = new ReportPage(page);
@@ -260,10 +260,10 @@ test('Create a new report with associated file', async ({ page }) => {
   const fileChooserPromise = page.waitForEvent('filechooser');
   await page.getByRole('button', { name: 'Select your file', exact: true }).click();
   const fileChooser = await fileChooserPromise;
-  await fileChooser.setFiles(path.join(__dirname, 'createReport.spec.ts'));
+  await fileChooser.setFiles(path.join(__dirname, 'report.spec.ts'));
   await reportPage.getCreateReportButton().click();
   await reportPage.getItemFromList('Test e2e with file').click();
   await expect(reportDetailsPage.getReportDetailsPage()).toBeVisible();
   await page.getByRole('tab', { name: 'Data' }).click();
-  await expect(page.getByRole('button', { name: 'createReport.spec.ts Launch' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'report.spec.ts Launch' })).toBeVisible();
 });
