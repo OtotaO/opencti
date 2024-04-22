@@ -9,11 +9,11 @@ test('Create a new report page and test update', async ({ page }) => {
   const reportForm = new ReportFormPage(page);
   await page.goto('/dashboard/analyses/reports');
   await reportPage.addNewReport();
-  await reportForm.fillNameInput('Test Update e2e');
+  await reportForm.nameField.fill('Test Update e2e');
   await reportPage.getCreateReportButton().click();
   await reportPage.getItemFromList('Test Update e2e').click();
   await reportDetailsPage.getEditButton().click();
-  await reportForm.fillNameInput('Modification Test Update e2e');
+  await reportForm.nameField.fill('Modification Test Update e2e');
   await reportForm.getCloseButton().click();
   await expect(reportDetailsPage.getTitle('Modification Test Update e2e')).toBeVisible();
 });
