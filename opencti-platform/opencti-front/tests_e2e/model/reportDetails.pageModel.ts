@@ -15,7 +15,18 @@ export default class ReportDetailsPage {
     return this.page.getByLabel('Edit');
   }
 
+  goToContentTab() {
+    return this.page.getByRole('tab', { name: 'Content' }).click();
+  }
+
   getObservablesTab() {
     return this.page.getByRole('tab', { name: 'Observables' });
+  }
+
+  getTextForHeading(heading: string, text: string) {
+    return this.page
+      .getByRole('heading', { name: heading })
+      .locator('..')
+      .getByText(text);
   }
 }

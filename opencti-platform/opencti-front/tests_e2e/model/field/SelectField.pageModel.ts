@@ -1,22 +1,14 @@
 import { Locator, Page } from '@playwright/test';
 
-interface SelectFieldPageModelOptions {
-  page: Page
-  multiple?: boolean
-}
-
 export default class SelectFieldPageModel {
-  private page: Page;
+  private readonly inputLocator: Locator;
+  private readonly parentLocator: Locator;
 
-  private multiple: boolean;
-
-  private inputLocator: Locator;
-
-  private parentLocator: Locator;
-
-  constructor(private label: string, { page, multiple = true }: SelectFieldPageModelOptions) {
-    this.page = page;
-    this.multiple = multiple;
+  constructor(
+    private readonly page: Page,
+    private readonly label: string,
+    private readonly multiple = true,
+  ) {
     this.inputLocator = this.page.getByRole('combobox', { name: label });
     this.parentLocator = this.inputLocator.locator('..');
   }

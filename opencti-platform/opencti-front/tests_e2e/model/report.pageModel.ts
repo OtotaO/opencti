@@ -7,10 +7,6 @@ export default class ReportPage {
     return this.page.getByTestId('report-page');
   }
 
-  goToPage() {
-    return this.page.getByLabel('Analyses').click();
-  }
-
   addNewReport() {
     return this.page.getByLabel('Add', { exact: true }).click();
   }

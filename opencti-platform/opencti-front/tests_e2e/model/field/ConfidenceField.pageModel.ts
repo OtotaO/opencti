@@ -1,9 +1,12 @@
 import { Locator, Page } from '@playwright/test';
 
 export default class ConfidenceFieldPageModel {
-  private alertLocator: Locator;
+  private readonly alertLocator: Locator;
 
-  constructor(private label: string, private page: Page) {
+  constructor(
+    private readonly page: Page,
+    private readonly label: string
+  ) {
     this.alertLocator = this.page.getByRole('alert', { name: label });
   }
 
