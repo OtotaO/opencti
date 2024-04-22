@@ -17,7 +17,7 @@ export default class SelectFieldPageModel {
     await this.inputLocator.click();
     await this.inputLocator.fill(option);
     const list = this.page.getByRole('listbox', { name: this.label });
-    return list.getByText(option).click();
+    return list.getByText(option, { exact: true }).click();
   }
 
   getOption(option: string) {

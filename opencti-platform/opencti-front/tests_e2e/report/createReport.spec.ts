@@ -103,35 +103,35 @@ test('Create a new report', async ({ page }) => {
   // region Control data on report details page
   // ------------------------------------------
 
-  const description = reportDetailsPage.getTextForHeading('Description', 'Test e2e Description');
+  let description = reportDetailsPage.getTextForHeading('Description', 'Test e2e Description');
   await expect(description).toBeVisible();
 
-  const publicationDate = reportDetailsPage.getTextForHeading('Publication date', 'December 5, 2023');
+  let publicationDate = reportDetailsPage.getTextForHeading('Publication date', 'December 5, 2023');
   await expect(publicationDate).toBeVisible();
 
-  const reportTypeThreat = reportDetailsPage.getTextForHeading('Report types', 'THREAT-REPORT');
+  let reportTypeThreat = reportDetailsPage.getTextForHeading('Report types', 'THREAT-REPORT');
   await expect(reportTypeThreat).toBeVisible();
-  const reportTypeMalware = reportDetailsPage.getTextForHeading('Report types', 'MALWARE');
+  let reportTypeMalware = reportDetailsPage.getTextForHeading('Report types', 'MALWARE');
   await expect(reportTypeMalware).toBeVisible();
 
-  const markingClear = reportDetailsPage.getTextForHeading('Marking', 'PAP:CLEAR');
+  let markingClear = reportDetailsPage.getTextForHeading('Marking', 'PAP:CLEAR');
   await expect(markingClear).toBeVisible();
-  const markingGreen = reportDetailsPage.getTextForHeading('Marking', 'TLP:GREEN');
+  let markingGreen = reportDetailsPage.getTextForHeading('Marking', 'TLP:GREEN');
   await expect(markingGreen).toBeVisible();
 
-  const author = reportDetailsPage.getTextForHeading('Author', 'ALLIED UNIVERSAL');
+  let author = reportDetailsPage.getTextForHeading('Author', 'ALLIED UNIVERSAL');
   await expect(author).toBeVisible();
 
-  const reliability = reportDetailsPage.getTextForHeading('Reliability', 'C - Fairly reliable');
+  let reliability = reportDetailsPage.getTextForHeading('Reliability', 'C - Fairly reliable');
   await expect(reliability).toBeVisible();
 
-  const confidenceLevel = reportDetailsPage.getTextForHeading('Confidence level', '2 - Probably True');
+  let confidenceLevel = reportDetailsPage.getTextForHeading('Confidence level', '2 - Probably True');
   await expect(confidenceLevel).toBeVisible();
 
-  const originalCreationDate = reportDetailsPage.getTextForHeading('Original creation date', 'December 5, 2023');
+  let originalCreationDate = reportDetailsPage.getTextForHeading('Original creation date', 'December 5, 2023');
   await expect(originalCreationDate).toBeVisible();
 
-  const processingStatus = reportDetailsPage.getTextForHeading('Processing status', 'NEW');
+  let processingStatus = reportDetailsPage.getTextForHeading('Processing status', 'NEW');
   await expect(processingStatus).toBeVisible();
 
   const assignees = reportDetailsPage.getTextForHeading('Assignees', 'ADMIN');
@@ -143,9 +143,9 @@ test('Create a new report', async ({ page }) => {
   const revoked = reportDetailsPage.getTextForHeading('Revoked', 'NO');
   await expect(revoked).toBeVisible();
 
-  const labelCampaign = reportDetailsPage.getTextForHeading('Labels', 'campaign');
+  let labelCampaign = reportDetailsPage.getTextForHeading('Labels', 'campaign');
   await expect(labelCampaign).toBeVisible();
-  const labelReport = reportDetailsPage.getTextForHeading('Labels', 'report');
+  let labelReport = reportDetailsPage.getTextForHeading('Labels', 'report');
   await expect(labelReport).toBeVisible();
 
   const creators = reportDetailsPage.getTextForHeading('Creators', 'ADMIN');
@@ -171,15 +171,80 @@ test('Create a new report', async ({ page }) => {
   await reportDetailsPage.goToContentTab();
   await expect(page.getByText('This is a Test e2e content')).toBeVisible();
 
-  //   const fileChooserPromise = page.waitForEvent('filechooser');
-  //   await page.getByRole('button', { name: 'Select your file', exact: true }).click();
-  //   const fileChooser = await fileChooserPromise;
-  //   await fileChooser.setFiles([
-  //     path.join(__dirname, 'assets/report.test.html'),
-  //     path.join(__dirname, 'assets/report.test.md'),
-  //     path.join(__dirname, 'assets/report.test.pdf'),
-  //     path.join(__dirname, 'assets/report.test.txt'),
-  //   ]);
+  // await reportDetailsPage.uploadContentFile('assets/report.test.html');
+  // await reportDetailsPage.goToObservablesTab();
+  // await reportDetailsPage.goToContentTab();
+  // await expect(reportDetailsPage.getContentFile('report.test.html')).toBeVisible();
+  // await reportDetailsPage.uploadContentFile('assets/report.test.md');
+  // await expect(reportDetailsPage.getContentFile('report.test.md')).toBeVisible();
+  // await reportDetailsPage.uploadContentFile('assets/report.test.pdf');
+  // await expect(reportDetailsPage.getContentFile('report.test.pdf')).toBeVisible();
+  // await reportDetailsPage.uploadContentFile('assets/report.test.txt');
+  // await expect(reportDetailsPage.getContentFile('report.test.txt')).toBeVisible();
+
+  // ---------
+  // endregion
+
+  // region Update the report
+  // ------------------------
+
+  await reportDetailsPage.goToOverviewTab();
+  await reportDetailsPage.getEditButton().click();
+
+  await reportForm.nameField.fill('Updated test e2e');
+  await reportForm.publicationDateField.fill('2023-12-25 18:00 PM');
+  await reportForm.reportTypesSelect.selectOption('threat-report');
+  await reportForm.reliabilitySelect.selectOption('B - Usually reliable');
+  await reportForm.confidenceLevelField.fillInput('50');
+  await reportForm.descriptionField.fill('Updated test e2e Description');
+  await reportForm.authorSelect.selectOption('ANSSI');
+  await reportForm.markingsSelect.selectOption('PAP:CLEAR');
+  await reportForm.markingsSelect.selectOption('PAP:GREEN');
+  await reportForm.statusSelect.selectOption('IN_PROGRESS');
+  await reportForm.getCloseButton().click();
+  await reportDetailsPage.openLabelsSelect();
+  await reportDetailsPage.labelsSelect.selectOption('covid-19');
+  await reportDetailsPage.addLabels();
+
+  description = reportDetailsPage.getTextForHeading('Description', 'Updated test e2e Description');
+  await expect(description).toBeVisible();
+
+  publicationDate = reportDetailsPage.getTextForHeading('Publication date', 'December 25, 2023');
+  await expect(publicationDate).toBeVisible();
+
+  reportTypeThreat = reportDetailsPage.getTextForHeading('Report types', 'THREAT-REPORT');
+  await expect(reportTypeThreat).toBeHidden();
+  reportTypeMalware = reportDetailsPage.getTextForHeading('Report types', 'MALWARE');
+  await expect(reportTypeMalware).toBeVisible();
+
+  markingClear = reportDetailsPage.getTextForHeading('Marking', 'PAP:CLEAR');
+  await expect(markingClear).toBeHidden();
+  const markingPapGreen = reportDetailsPage.getTextForHeading('Marking', 'PAP:GREEN');
+  await expect(markingPapGreen).toBeVisible();
+  markingGreen = reportDetailsPage.getTextForHeading('Marking', 'TLP:GREEN');
+  await expect(markingGreen).toBeVisible();
+
+  author = reportDetailsPage.getTextForHeading('Author', 'ANSSI');
+  await expect(author).toBeVisible();
+
+  reliability = reportDetailsPage.getTextForHeading('Reliability', 'B - Usually reliable');
+  await expect(reliability).toBeVisible();
+
+  confidenceLevel = reportDetailsPage.getTextForHeading('Confidence level', '3 - Possibly True');
+  await expect(confidenceLevel).toBeVisible();
+
+  originalCreationDate = reportDetailsPage.getTextForHeading('Original creation date', 'December 5, 2023');
+  await expect(originalCreationDate).toBeVisible();
+
+  processingStatus = reportDetailsPage.getTextForHeading('Processing status', 'IN_PROGRESS');
+  await expect(processingStatus).toBeVisible();
+
+  labelCampaign = reportDetailsPage.getTextForHeading('Labels', 'campaign');
+  await expect(labelCampaign).toBeVisible();
+  labelReport = reportDetailsPage.getTextForHeading('Labels', 'report');
+  await expect(labelReport).toBeVisible();
+  const labelCovid = reportDetailsPage.getTextForHeading('Labels', 'covid-19');
+  await expect(labelCovid).toBeVisible();
 
   // ---------
   // endregion

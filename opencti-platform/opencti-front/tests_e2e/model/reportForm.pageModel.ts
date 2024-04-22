@@ -15,6 +15,7 @@ export default class ReportFormPage {
 
   labelsSelect = new SelectFieldPageModel(this.page, 'Labels');
   markingsSelect = new SelectFieldPageModel(this.page, 'Markings');
+  statusSelect = new SelectFieldPageModel(this.page, 'Status', false);
   authorSelect = new SelectFieldPageModel(this.page, 'Author', false);
   assigneesSelect = new SelectFieldPageModel(this.page, 'Assignee(s)');
   reportTypesSelect = new SelectFieldPageModel(this.page, 'Report types');
