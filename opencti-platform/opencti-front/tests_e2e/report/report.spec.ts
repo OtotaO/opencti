@@ -6,6 +6,18 @@ import ReportDetailsPage from '../model/reportDetails.pageModel';
 import ReportFormPage from '../model/reportForm.pageModel';
 import fakeDate from '../utils';
 
+/**
+ * Content of the test
+ * -------------------
+ * Check open/close form.
+ * Check default values of the form.
+ * Create a new report.
+ * Check fields validation in the form.
+ * View report details after creation.
+ * Check data of the created report.
+ * Update a report.
+ * Check updated report.
+ */
 test('Report CRUD', async ({ page }) => {
   await fakeDate(page, 'April 1 2024 12:00:00');
 
