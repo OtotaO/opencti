@@ -68,7 +68,7 @@ import {
 } from '../domain/backgroundTask-common';
 import { validateUpdatableAttribute } from '../schema/schema-validator';
 import { schemaRelationsRefDefinition } from '../schema/schema-relationsRef';
-import { processDelete, restoreDelete } from '../modules/deleteOperation/deleteOperation-domain';
+import { processDeleteOperation, restoreDelete } from '../modules/deleteOperation/deleteOperation-domain';
 
 // Task manager responsible to execute long manual tasks
 // Each API will start is task manager.
@@ -208,7 +208,7 @@ const executeDelete = async (context, user, element) => {
   await deleteElementById(context, user, element.internal_id, element.entity_type);
 };
 const executeCompleteDelete = async (context, user, element) => {
-  await processDelete(context, user, element.internal_id);
+  await processDeleteOperation(context, user, element.internal_id, { isRestoring: false });
 };
 const executeRestore = async (context, user, element) => {
   await restoreDelete(context, user, element.internal_id);

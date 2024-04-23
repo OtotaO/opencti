@@ -15,6 +15,9 @@ import { isStixCoreRelationship } from '../../schema/stixCoreRelationship';
 import { isStixRelationship } from '../../schema/stixRelationship';
 import { isStixObject } from '../../schema/stixCoreObject';
 import { elUpdateRemovedFiles } from '../../database/file-search';
+import { isStixSightingRelationship } from '../../schema/stixSightingRelationship';
+import { logApp } from '../../config/conf';
+import { isStixRefRelationship } from '../../schema/stixRefRelationship';
 
 type CompleteDeleteOptions = {
   isRestoring?: boolean
@@ -43,7 +46,8 @@ const convertStoreEntityToInput = (element: BasicStoreObject) => {
   const availableAttributeNames = availableAttributes.map((attr) => attr.name);
   const directInputs = pick(element, availableAttributeNames);
 
-  // add refs using inverse mapping database name <> attribute name
+  // We need all refs that have 'From' as the main entity ; we can rely on the schema
+  // add refs registered for this type using inverse mapping database name <> attribute name
   // for instance created-by in DB shall be createdBy in the input object
   const availableRefAttributes = schemaRelationsRefDefinition.getRelationsRef(entity_type);
   const availableRefAttributesDatabaseNames = availableRefAttributes.map((attr) => attr.databaseName);
@@ -68,20 +72,21 @@ const convertStoreEntityToInput = (element: BasicStoreObject) => {
       ...connectionInput,
     };
   }
-  throw FunctionalError('Could not convert element to input for DeleteOperation restore');
+  throw FunctionalError('Could not convert element to input for DeleteOperation restore', { entity_type });
 };
 
 export const resolveEntitiesToRestore = async (context: AuthContext, user: AuthUser, deleteOperation: BasicStoreEntityDeleteOperation) => {
   // check that the element cluster can be fully restored, throw error otherwise
-  const { main_entity_id, deleted_elements } = deleteOperation;
-  // const mainElementToRestore = await internalLoadById(context, user, main_entity_id, { type: main_entity_type, indices: [INDEX_DELETED_OBJECTS] });
+  const { main_entity_id, main_entity_type, deleted_elements } = deleteOperation;
   const elementsToRestore = await elFindByIds(context, user, deleted_elements.map((deleted) => deleted.id), { indices: [INDEX_DELETED_OBJECTS] }) as BasicStoreObject[];
   const mainElementToRestore = elementsToRestore.find((e) => e.id === main_entity_id);
   const relationshipsToRestore = elementsToRestore.filter((e) => e.id !== main_entity_id);
+
   // check that we have main elements and all relationships in trash index
   if (!mainElementToRestore || elementsToRestore.length !== deleted_elements.length) {
     throw FunctionalError('Cannot restore : deleted elements not found.');
   }
+
   // check that all relationships from & to exist (either in live DB or in elementsToRestore)
   const allRelationshipsToRestore = elementsToRestore.filter((e) => isStixRelationship(e.entity_type));
   const targetIdsToFind = []; // targets not found in elements to restore, we will search them in live DB.
@@ -96,6 +101,8 @@ export const resolveEntitiesToRestore = async (context: AuthContext, user: AuthU
     }
   }
   if (targetIdsToFind.length > 0) {
+    // the DELETED_OBJECTS index is not read by default ;
+    // TODO: handle cascade restore if the item is found in the trash
     const targets = await elFindByIds(context, user, targetIdsToFind, { baseData: true, baseFields: ['internal_id', 'entity_type'] }) as BasicStoreObject[];
     if (targets.length < targetIdsToFind.length) {
       throw FunctionalError('Cannot restore : missing target elements to restore relationships');
@@ -106,9 +113,17 @@ export const resolveEntitiesToRestore = async (context: AuthContext, user: AuthU
     // TODO check that main entity has not been created in the meantime in live DB
   }
   // TODO -> if OK, then return the ordered list of deleted_elements, ready to be restored in the right order
+
+  // filter out the refs registered in the schema for the main entity (they are recreated already  when restoring the main entity)
+
+  const availableRefAttributes = schemaRelationsRefDefinition.getRelationsRef(main_entity_type);
+  // availableRefAttributes = [objects, object-label...]
+  const availableRefAttributesDatabaseNames = availableRefAttributes.map((attr) => attr.databaseName);
+  // availableRefAttributesDatabaseNames = [rel_object, rel_object-label...]
+
   return {
     mainElementToRestore,
-    relationshipsToRestore // TODO filter ref
+    relationshipsToRestore: relationshipsToRestore.filter((r) => !availableRefAttributesDatabaseNames.includes(r.entity_type))
   };
 
   // -> filter out only relationships, not refs (handled below directly)
@@ -130,27 +145,38 @@ export const findAll = async (context: AuthContext, user: AuthUser, args: QueryD
 /**
  * Permanently delete a given DeleteOperation and all the elements referenced in it, wherever they are (restored or not).
  */
-export const processDelete = async (context: AuthContext, user: AuthUser, id: string, opts: CompleteDeleteOptions = {}) => {
+export const processDeleteOperation = async (context: AuthContext, user: AuthUser, id: string, opts: CompleteDeleteOptions = {}) => {
   const { isRestoring } = opts;
   const deleteOperation = await findById(context, user, id);
   if (!deleteOperation) {
     throw FunctionalError(`Delete operation ${id} cannot be found`);
   }
   controlUserConfidenceAgainstElement(user, deleteOperation);
+
+  const { main_entity_id, deleted_elements } = deleteOperation;
   // get all deleted elements & main deleted entity (from deleted_objects index)
-  const mainEntityId = deleteOperation.main_entity_id;
-  const deletedElementsIds = deleteOperation.deleted_elements.map((el) => el.id);
+  const mainEntityId = main_entity_id;
+  const deletedElementsIds = deleted_elements.map((el) => el.id);
   const deletedElements: any[] = await elFindByIds(context, user, deletedElementsIds, { indices: READ_INDEX_DELETED_OBJECTS }) as any[];
   const mainDeletedEntity = deletedElements.find((el) => el.internal_id === mainEntityId);
-  if (mainDeletedEntity && !isRestoring) {
-    // only delete the files associated to the main entity if we're not restoring it
-    await deleteAllObjectFiles(context, user, mainDeletedEntity);
+  if (mainDeletedEntity && isStixObject(mainDeletedEntity.entity_type)) {
+    if (isRestoring) {
+      // cluster restored: flag the files available for search again
+      await elUpdateRemovedFiles(mainDeletedEntity, false);
+    } else {
+      // confirm delete: delete associated files permanently
+      await deleteAllObjectFiles(context, user, mainDeletedEntity);
+    }
   }
   // delete elements
   await elDeleteInstances([...deletedElements]);
   // finally delete deleteOperation
   await elDeleteInstances([deleteOperation]);
   return id;
+};
+
+export const confirmDelete = (context: AuthContext, user: AuthUser, id: string) => {
+  return processDeleteOperation(context, user, id, { isRestoring: false });
 };
 
 export const restoreDelete = async (context: AuthContext, user: AuthUser, id: string) => {
@@ -166,25 +192,26 @@ export const restoreDelete = async (context: AuthContext, user: AuthUser, id: st
   const mainEntityInput = convertStoreEntityToInput(mainElementToRestore);
   if (isStixObject(mainElementToRestore.entity_type)) {
     await createEntity(context, user, mainEntityInput, main_entity_type);
-  }
-  if (isStixRelationship(mainElementToRestore.entity_type)) {
+  } else if (isStixRelationship(mainElementToRestore.entity_type)) {
     await createRelation(context, user, mainEntityInput, main_entity_type);
+    // no file associated to relationships
+  } else {
+    throw FunctionalError('Cannot restore main entity: unhandled entity type', { main_entity_type });
   }
 
-  // restore the relationships
+  // restore the relationships, the order is already optimized
   for (let i = 0; i < relationshipsToRestore.length; i += 1) {
-    if (isStixCoreRelationship(relationshipsToRestore[i].entity_type)) {
+    const { entity_type } = relationshipsToRestore[i];
+    // we handle also the refs relationship 'to' the main entity (like 'objects' for containers)
+    if (isStixRelationship(entity_type)) { // ref, sighting and core
       const relationshipInput = convertStoreEntityToInput(relationshipsToRestore[i]);
       await createRelation(context, user, relationshipInput);
+    } else {
+      logApp.warn('Could not restore relationship', { entity_type });
     }
   }
-
-  // flag the files available for search again
-  await elUpdateRemovedFiles(mainElementToRestore, false);
-
   // now delete the DeleteOperation and all the elements in the trash index
-  await processDelete(context, user, id, { isRestoring: true });
+  await processDeleteOperation(context, user, id, { isRestoring: true });
 
-  // return notify(BUS_TOPICS[main_entity_type].EDIT_TOPIC, created, user);
   return id;
 };

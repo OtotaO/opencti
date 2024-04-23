@@ -1,5 +1,5 @@
 import type { Resolvers } from '../../generated/graphql';
-import { processDelete, findAll, findById, restoreDelete } from './deleteOperation-domain';
+import { findAll, findById, restoreDelete, confirmDelete } from './deleteOperation-domain';
 import { batchLoader } from '../../database/middleware';
 import { batchCreator } from '../../domain/user';
 import { batchMarkingDefinitions } from '../../domain/stixCoreObject';
@@ -18,7 +18,7 @@ const deleteOperationResolvers: Resolvers = {
   },
   Mutation: {
     deleteOperationRestore: (_, { id }, context) => restoreDelete(context, context.user, id),
-    deleteOperationConfirm: (_, { id }, context) => processDelete(context, context.user, id),
+    deleteOperationConfirm: (_, { id }, context) => confirmDelete(context, context.user, id),
   }
 };
 
