@@ -4,20 +4,22 @@ type TextFieldPageModelType = 'text' | 'text-area' | 'rich-content';
 
 export default class TextFieldPageModel {
   private readonly inputLocator: Locator;
+  private readonly parentLocator: Locator;
 
   constructor(
-    private readonly page: Page,
+    private readonly page: Page | Locator,
     label: string,
     type: TextFieldPageModelType = 'text',
   ) {
     if (type === 'text-area') {
-      const parent = this.page.getByText(label).locator('..');
-      this.inputLocator = parent.getByTestId('text-area');
+      this.parentLocator = this.page.getByText(label).locator('../../../..');
+      this.inputLocator = this.parentLocator.getByTestId('text-area');
     } else if (type === 'rich-content') {
-      const parent = this.page.getByText(label).locator('..');
-      this.inputLocator = parent.getByLabel('Editor editing area: main');
+      this.parentLocator = this.page.getByText(label).locator('..');
+      this.inputLocator = this.parentLocator.getByLabel('Editor editing area: main');
     } else {
       this.inputLocator = this.page.getByLabel(label);
+      this.parentLocator = this.page.getByText(label).locator('..');
     }
   }
 
@@ -37,5 +39,9 @@ export default class TextFieldPageModel {
     await this.inputLocator.click();
     if (clear) await this.clear();
     return this.inputLocator.fill(input);
+  }
+
+  getByText(input: string) {
+    return this.parentLocator.getByText(input);
   }
 }

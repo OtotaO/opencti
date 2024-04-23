@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import SelectFieldPageModel from './field/SelectField.pageModel';
+import AutocompleteFieldPageModel from './field/AutocompleteFieldPageModel';
 import ConfidenceFieldPageModel from './field/ConfidenceField.pageModel';
 import DateFieldPageModel from './field/DateField.pageModel';
 import TextFieldPageModel from './field/TextField.pageModel';
@@ -13,14 +13,15 @@ export default class ReportFormPage {
 
   publicationDateField = new DateFieldPageModel(this.page, 'Publication date');
 
-  labelsSelect = new SelectFieldPageModel(this.page, 'Labels');
-  markingsSelect = new SelectFieldPageModel(this.page, 'Markings');
-  statusSelect = new SelectFieldPageModel(this.page, 'Status', false);
-  authorSelect = new SelectFieldPageModel(this.page, 'Author', false);
-  assigneesSelect = new SelectFieldPageModel(this.page, 'Assignee(s)');
-  reportTypesSelect = new SelectFieldPageModel(this.page, 'Report types');
-  participantsSelect = new SelectFieldPageModel(this.page, 'Participant(s)');
-  reliabilitySelect = new SelectFieldPageModel(this.page, 'Reliability', false);
+  labelsAutocomplete = new AutocompleteFieldPageModel(this.page, 'Labels');
+  markingsAutocomplete = new AutocompleteFieldPageModel(this.page, 'Markings');
+  statusAutocomplete = new AutocompleteFieldPageModel(this.page, 'Status', false);
+  authorAutocomplete = new AutocompleteFieldPageModel(this.page, 'Author', false);
+  assigneesAutocomplete = new AutocompleteFieldPageModel(this.page, 'Assignee(s)');
+  reportTypesAutocomplete = new AutocompleteFieldPageModel(this.page, 'Report types');
+  participantsAutocomplete = new AutocompleteFieldPageModel(this.page, 'Participant(s)');
+  reliabilityAutocomplete = new AutocompleteFieldPageModel(this.page, 'Reliability', false);
+  externalReferencesAutocomplete = new AutocompleteFieldPageModel(this.page, 'External references');
 
   constructor(private page: Page) {}
 

@@ -1,9 +1,9 @@
 import { Page } from '@playwright/test';
 import path from 'path';
-import SelectFieldPageModel from './field/SelectField.pageModel';
+import AutocompleteFieldPageModel from './field/AutocompleteFieldPageModel';
 
 export default class ReportDetailsPage {
-  labelsSelect = new SelectFieldPageModel(this.page, 'Labels');
+  labelsSelect = new AutocompleteFieldPageModel(this.page, 'Labels');
 
   constructor(private page: Page) {}
 
@@ -54,6 +54,6 @@ export default class ReportDetailsPage {
   }
 
   addLabels() {
-    return this.page.getByRole('button', { name: 'Add' }).click();
+    return this.page.getByText('Add', { exact: true }).click();
   }
 }

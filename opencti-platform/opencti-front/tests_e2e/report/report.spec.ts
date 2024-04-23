@@ -5,6 +5,7 @@ import ReportPage from '../model/report.pageModel';
 import ReportDetailsPage from '../model/reportDetails.pageModel';
 import ReportFormPage from '../model/reportForm.pageModel';
 import fakeDate from '../utils';
+import AuthorFormPageModel from '../model/authorForm.pageModel';
 
 /**
  * Content of the test
@@ -30,11 +31,11 @@ test('Report CRUD', async ({ page }) => {
   // region Check is displayed
   // -------------------------
 
-  await reportPage.addNewReport();
+  await reportPage.openNewReportForm();
   await expect(reportForm.getTitle()).toBeVisible();
   await reportForm.getCancelButton().click();
   await expect(reportForm.getTitle()).not.toBeVisible();
-  await reportPage.addNewReport();
+  await reportPage.openNewReportForm();
   await expect(reportForm.getTitle()).toBeVisible();
 
   // ---------
@@ -67,13 +68,13 @@ test('Report CRUD', async ({ page }) => {
   await reportForm.publicationDateField.fill('2023-12-05 12:00 AM');
   await expect(page.getByText('The value must be a datetime (yyyy-MM-dd hh:mm (a|p)m)')).toBeHidden();
 
-  await reportForm.reportTypesSelect.selectOption('malware');
-  await expect(reportForm.reportTypesSelect.getOption('malware')).toBeVisible();
-  await reportForm.reportTypesSelect.selectOption('threat-report');
-  await expect(reportForm.reportTypesSelect.getOption('threat-report')).toBeVisible();
+  await reportForm.reportTypesAutocomplete.selectOption('malware');
+  await expect(reportForm.reportTypesAutocomplete.getOption('malware')).toBeVisible();
+  await reportForm.reportTypesAutocomplete.selectOption('threat-report');
+  await expect(reportForm.reportTypesAutocomplete.getOption('threat-report')).toBeVisible();
 
-  await reportForm.reliabilitySelect.selectOption('C - Fairly reliable');
-  await expect(reportForm.reliabilitySelect.getOption('C - Fairly reliable')).toBeVisible();
+  await reportForm.reliabilityAutocomplete.selectOption('C - Fairly reliable');
+  await expect(reportForm.reliabilityAutocomplete.getOption('C - Fairly reliable')).toBeVisible();
 
   await reportForm.confidenceLevelField.fillInput('75');
   await expect(reportForm.confidenceLevelField.getSelect().getByText('2 - Probably True')).toBeVisible();
@@ -86,24 +87,24 @@ test('Report CRUD', async ({ page }) => {
   await reportForm.contentField.fill('This is a Test e2e content');
   await expect(page.getByText('This is a Test e2e content')).toBeVisible();
 
-  await reportForm.assigneesSelect.selectOption('admin');
-  await expect(reportForm.assigneesSelect.getOption('admin')).toBeVisible();
+  await reportForm.assigneesAutocomplete.selectOption('admin');
+  await expect(reportForm.assigneesAutocomplete.getOption('admin')).toBeVisible();
 
-  await reportForm.participantsSelect.selectOption('admin');
-  await expect(reportForm.participantsSelect.getOption('admin')).toBeVisible();
+  await reportForm.participantsAutocomplete.selectOption('admin');
+  await expect(reportForm.participantsAutocomplete.getOption('admin')).toBeVisible();
 
-  await reportForm.authorSelect.selectOption('Allied Universal');
-  await expect(reportForm.authorSelect.getOption('Allied Universal')).toBeVisible();
+  await reportForm.authorAutocomplete.selectOption('Allied Universal');
+  await expect(reportForm.authorAutocomplete.getOption('Allied Universal')).toBeVisible();
 
-  await reportForm.labelsSelect.selectOption('campaign');
-  await expect(reportForm.labelsSelect.getOption('campaign')).toBeVisible();
-  await reportForm.labelsSelect.selectOption('report');
-  await expect(reportForm.labelsSelect.getOption('report')).toBeVisible();
+  await reportForm.labelsAutocomplete.selectOption('campaign');
+  await expect(reportForm.labelsAutocomplete.getOption('campaign')).toBeVisible();
+  await reportForm.labelsAutocomplete.selectOption('report');
+  await expect(reportForm.labelsAutocomplete.getOption('report')).toBeVisible();
 
-  await reportForm.markingsSelect.selectOption('PAP:CLEAR');
-  await expect(reportForm.markingsSelect.getOption('PAP:CLEAR')).toBeVisible();
-  await reportForm.markingsSelect.selectOption('TLP:GREEN');
-  await expect(reportForm.markingsSelect.getOption('TLP:GREEN')).toBeVisible();
+  await reportForm.markingsAutocomplete.selectOption('PAP:CLEAR');
+  await expect(reportForm.markingsAutocomplete.getOption('PAP:CLEAR')).toBeVisible();
+  await reportForm.markingsAutocomplete.selectOption('TLP:GREEN');
+  await expect(reportForm.markingsAutocomplete.getOption('TLP:GREEN')).toBeVisible();
 
   await reportForm.getCreateButton().click();
   await reportPage.getItemFromList('Test e2e').click();
@@ -205,14 +206,14 @@ test('Report CRUD', async ({ page }) => {
 
   await reportForm.nameField.fill('Updated test e2e');
   await reportForm.publicationDateField.fill('2023-12-25 18:00 PM');
-  await reportForm.reportTypesSelect.selectOption('threat-report');
-  await reportForm.reliabilitySelect.selectOption('B - Usually reliable');
+  await reportForm.reportTypesAutocomplete.selectOption('threat-report');
+  await reportForm.reliabilityAutocomplete.selectOption('B - Usually reliable');
   await reportForm.confidenceLevelField.fillInput('50');
   await reportForm.descriptionField.fill('Updated test e2e Description');
-  await reportForm.authorSelect.selectOption('ANSSI');
-  await reportForm.markingsSelect.selectOption('PAP:CLEAR');
-  await reportForm.markingsSelect.selectOption('PAP:GREEN');
-  await reportForm.statusSelect.selectOption('IN_PROGRESS');
+  await reportForm.authorAutocomplete.selectOption('ANSSI');
+  await reportForm.markingsAutocomplete.selectOption('PAP:CLEAR');
+  await reportForm.markingsAutocomplete.selectOption('PAP:GREEN');
+  await reportForm.statusAutocomplete.selectOption('IN_PROGRESS');
   await reportForm.getCloseButton().click();
   await reportDetailsPage.openLabelsSelect();
   await reportDetailsPage.labelsSelect.selectOption('covid-19');
@@ -262,12 +263,38 @@ test('Report CRUD', async ({ page }) => {
   // endregion
 });
 
+test('Report creation with entities created on the fly', async ({ page }) => {
+  const reportPage = new ReportPage(page);
+  const reportForm = new ReportFormPage(page);
+  const authorForm = new AuthorFormPageModel(page);
+
+  await page.goto('/dashboard/analyses/reports');
+  await reportPage.openNewReportForm();
+
+  await reportForm.nameField.fill('Report with created entities');
+
+  // Create author on the fly
+  await reportForm.authorAutocomplete.openAddOptionForm();
+  // Check required fields
+  await authorForm.getCreateButton().click();
+  await expect(authorForm.nameField.getByText('This field is required')).toBeVisible();
+  await expect(authorForm.entityTypeSelect.getByText('This field is required')).toBeVisible();
+
+  await authorForm.nameField.fill('Jeanne Mitchel');
+
+  // await reportForm.getCreateButton().click();
+  // await reportPage.getItemFromList('Report with created entities').click();
+
+  // author = reportDetailsPage.getTextForHeading('Author', 'Jeanne Mitchel');
+  // await expect(author).toBeVisible();
+});
+
 test('Create a new report with associated file', async ({ page }) => {
   const reportPage = new ReportPage(page);
   const reportDetailsPage = new ReportDetailsPage(page);
   const reportForm = new ReportFormPage(page);
   await page.goto('/dashboard/analyses/reports');
-  await reportPage.addNewReport();
+  await reportPage.openNewReportForm();
   await reportForm.nameField.fill('Test e2e with file');
   const fileChooserPromise = page.waitForEvent('filechooser');
   await page.getByRole('button', { name: 'Select your file', exact: true }).click();

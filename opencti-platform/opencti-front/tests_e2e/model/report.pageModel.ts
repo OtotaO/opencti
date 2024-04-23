@@ -7,7 +7,7 @@ export default class ReportPage {
     return this.page.getByTestId('report-page');
   }
 
-  addNewReport() {
+  openNewReportForm() {
     return this.page.getByLabel('Add', { exact: true }).click();
   }
 

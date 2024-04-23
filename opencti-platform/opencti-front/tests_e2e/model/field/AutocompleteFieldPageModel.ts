@@ -1,16 +1,16 @@
 import { Locator, Page } from '@playwright/test';
 
-export default class SelectFieldPageModel {
+export default class AutocompleteFieldPageModel {
   private readonly inputLocator: Locator;
   private readonly parentLocator: Locator;
 
   constructor(
-    private readonly page: Page,
+    private readonly page: Page | Locator,
     private readonly label: string,
     private readonly multiple = true,
   ) {
     this.inputLocator = this.page.getByRole('combobox', { name: label });
-    this.parentLocator = this.inputLocator.locator('..');
+    this.parentLocator = this.inputLocator.locator('../../../..');
   }
 
   async selectOption(option: string) {
@@ -24,5 +24,13 @@ export default class SelectFieldPageModel {
     return this.multiple
       ? this.parentLocator.getByRole('button', { name: option, exact: true })
       : this.inputLocator;
+  }
+
+  openAddOptionForm() {
+    return this.parentLocator.getByRole('button', { name: 'Add', exact: true }).click();
+  }
+
+  getByText(input: string) {
+    return this.parentLocator.getByText(input);
   }
 }

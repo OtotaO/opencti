@@ -5,7 +5,7 @@ export default class ConfidenceFieldPageModel {
 
   constructor(
     private readonly page: Page,
-    private readonly label: string
+    private readonly label: string,
   ) {
     this.alertLocator = this.page.getByRole('alert', { name: label });
   }

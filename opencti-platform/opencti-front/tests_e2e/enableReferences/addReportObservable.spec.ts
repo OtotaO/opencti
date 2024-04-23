@@ -116,7 +116,7 @@ test('Add and remove observable from Observables tab of a Report as Admin user',
   // Create a report and check that adding an observable is possible
   await page.goto('/dashboard/analyses/reports');
   await page.getByTestId('ChevronRightIcon').click();
-  await reportPage.addNewReport();
+  await reportPage.openNewReportForm();
   await reportForm.nameField.fill('Test add observable e2e');
   await reportPage.getCreateReportButton().click();
   await reportPage.getItemFromList('Test add observable e2e').click();
@@ -168,7 +168,7 @@ test.describe('Add and remove observable from Observables tab of a Report as noB
     // Create a report and check that adding an observable is possible
     await page.goto('/dashboard/analyses/reports');
     await page.getByTestId('ChevronRightIcon').click();
-    await reportPage.addNewReport();
+    await reportPage.openNewReportForm();
     await reportForm.nameField.fill('Test add observable e2e 2');
     await reportPage.getCreateReportButton().click();
     await reportPage.getItemFromList('Test add observable e2e 2').click();

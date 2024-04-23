@@ -4,7 +4,7 @@ import ReportPage from '../model/report.pageModel';
 test.skip('Create a new report page and delete it', async ({ page }) => {
   const reportPage = new ReportPage(page);
   await page.goto('/dashboard/analyses/reports');
-  await reportPage.addNewReport();
+  await reportPage.openNewReportForm();
   await reportPage.getReportNameInput().click();
   await reportPage.getReportNameInput().fill('Test delete report e2e');
   await reportPage.getCreateReportButton().click();
