@@ -1233,6 +1233,7 @@ class ToolBar extends Component {
       noMarking,
       noWarning,
       deleteDisable,
+      mergeDisable,
       deleteOperationEnabled,
       warning,
       warningMessage,
@@ -1285,6 +1286,7 @@ class ToolBar extends Component {
       R.uniq(R.map((o) => o.entity_type, R.values(selectedElements || {})))[0],
       notMergableTypes,
     );
+    const enableMerge = !typesAreNotMergable && !mergeDisable;
     const notAddableTypes = ['Label', 'Vocabulary', 'Case-Template', 'DeleteOperation'];
     const typesAreNotAddableInContainer = R.includes(
       R.uniq(
@@ -1491,7 +1493,7 @@ class ToolBar extends Component {
                       </span>
                     </Tooltip>
                   )}
-                  {!typesAreNotMergable && (
+                  {enableMerge && (
                     <Tooltip title={t('Merge')}>
                       <span>
                         <IconButton

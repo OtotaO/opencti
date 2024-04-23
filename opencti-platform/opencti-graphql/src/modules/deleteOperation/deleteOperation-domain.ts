@@ -11,13 +11,10 @@ import { schemaAttributesDefinition } from '../../schema/schema-attributes';
 import { schemaRelationsRefDefinition } from '../../schema/schema-relationsRef';
 import { createEntity, createRelation } from '../../database/middleware';
 import type { BasicStoreObject, BasicStoreRelation } from '../../types/store';
-import { isStixCoreRelationship } from '../../schema/stixCoreRelationship';
 import { isStixRelationship } from '../../schema/stixRelationship';
 import { isStixObject } from '../../schema/stixCoreObject';
 import { elUpdateRemovedFiles } from '../../database/file-search';
-import { isStixSightingRelationship } from '../../schema/stixSightingRelationship';
 import { logApp } from '../../config/conf';
-import { isStixRefRelationship } from '../../schema/stixRefRelationship';
 
 type CompleteDeleteOptions = {
   isRestoring?: boolean

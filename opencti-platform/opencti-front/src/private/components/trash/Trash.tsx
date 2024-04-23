@@ -153,6 +153,7 @@ const Trash: React.FC = () => {
           type="DeleteOperation"
           deleteDisable={true}
           deleteOperationEnabled={true}
+          mergeDisable={true}
         />
       </div>
     );
