@@ -3,7 +3,7 @@ import TextFieldPageModel from './field/TextField.pageModel';
 import AutocompleteFieldPageModel from './field/AutocompleteFieldPageModel';
 import SelectFieldPageModel from './field/SelectFieldPageModel';
 
-export default class AuthorFormPageModel {
+export default class AuthorFormPageModel { // TODO should we remove unused variables or use it?
   private readonly formLocator = this.page.getByLabel('Create an entity');
   nameField = new TextFieldPageModel(this.formLocator, 'Name');
   descriptionField = new TextFieldPageModel(this.formLocator, 'Description', 'text-area');

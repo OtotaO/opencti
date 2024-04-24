@@ -9,20 +9,19 @@ export default class SelectFieldPageModel {
     private readonly label: string,
     private readonly multiple = true,
   ) {
-    this.inputLocator = this.page.getByRole('combobox', { name: label });
+    this.inputLocator = this.page.getByLabel('', { exact: true }); // TODO fix ugly locator
     this.parentLocator = this.inputLocator.locator('../..');
   }
 
   async selectOption(option: string) {
     await this.inputLocator.click();
-    await this.inputLocator.fill(option);
     const list = this.page.getByRole('listbox', { name: this.label });
     return list.getByText(option, { exact: true }).click();
   }
 
   getOption(option: string) {
     return this.multiple
-      ? this.parentLocator.getByRole('button', { name: option, exact: true })
+      ? this.parentLocator.getByRole('option', { name: option })
       : this.inputLocator;
   }
 

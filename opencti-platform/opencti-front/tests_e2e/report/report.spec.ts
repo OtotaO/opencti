@@ -6,6 +6,7 @@ import ReportDetailsPage from '../model/reportDetails.pageModel';
 import ReportFormPage from '../model/reportForm.pageModel';
 import fakeDate from '../utils';
 import AuthorFormPageModel from '../model/authorForm.pageModel';
+import LabelFormPageModel from '../model/labelForm.pageModel';
 
 /**
  * Content of the test
@@ -263,30 +264,68 @@ test('Report CRUD', async ({ page }) => {
   // endregion
 });
 
-test('Report creation with entities created on the fly', async ({ page }) => {
+test('Report creation with entities created from the report creation form', async ({ page }) => {
   const reportPage = new ReportPage(page);
   const reportForm = new ReportFormPage(page);
   const authorForm = new AuthorFormPageModel(page);
+  const labelForm = new LabelFormPageModel(page);
+  const reportDetailsPage = new ReportDetailsPage(page);
 
   await page.goto('/dashboard/analyses/reports');
   await reportPage.openNewReportForm();
 
   await reportForm.nameField.fill('Report with created entities');
 
-  // Create author on the fly
+  // region Check author and labels creation forms fields validation
+  // ------------------------------
+
+  // Create author from the report creation form
   await reportForm.authorAutocomplete.openAddOptionForm();
-  // Check required fields
   await authorForm.getCreateButton().click();
   await expect(authorForm.nameField.getByText('This field is required')).toBeVisible();
-  await expect(authorForm.entityTypeSelect.getByText('This field is required')).toBeVisible();
-
+  // await expect(authorForm.entityTypeSelect.getByText('This field is required')).toBeVisible();
+  await expect(page.getByText('This field is required').nth(1)).toBeVisible(); // TODO replace ugly locator
   await authorForm.nameField.fill('Jeanne Mitchel');
+  await expect(authorForm.nameField.getByText('This field is required')).toBeHidden();
+  await authorForm.entityTypeSelect.selectOption('Individual');
+  await expect(authorForm.entityTypeSelect.getOption('Individual')).toBeVisible();
+  await authorForm.getCreateButton().click();
 
-  // await reportForm.getCreateButton().click();
-  // await reportPage.getItemFromList('Report with created entities').click();
+  // Create label from the report creation form
+  await reportForm.labelsAutocomplete.openAddOptionForm();
+  await labelForm.getCreateButton().click();
+  await expect(labelForm.valueField.getByText('This field is required')).toBeVisible();
+  await expect(labelForm.colorField.getByText('This field is required')).toBeVisible();
+  await labelForm.valueField.fill('campaign');
+  await expect(labelForm.valueField.getByText('This field is required')).toBeHidden();
+  await labelForm.colorField.fill('#9d3fb8');
+  await expect(labelForm.colorField.getByText('This field is required')).toBeHidden();
+  await labelForm.getCreateButton().click();
 
-  // author = reportDetailsPage.getTextForHeading('Author', 'Jeanne Mitchel');
-  // await expect(author).toBeVisible();
+  // Create report
+  await reportForm.getCreateButton().click();
+  await reportPage.getItemFromList('Report with created entities').click();
+  await expect(reportDetailsPage.getReportDetailsPage()).toBeVisible();
+
+  // Create external references
+  // TODO external ref
+
+  // ---------
+  // endregion
+
+  // region Control data on report details page
+  // ------------------------------------------
+
+  const author = reportDetailsPage.getTextForHeading('Author', 'Jeanne Mitchel');
+  await expect(author).toBeVisible();
+
+  const labelCampaign = reportDetailsPage.getTextForHeading('Labels', 'campaign');
+  await expect(labelCampaign).toBeVisible();
+
+  // TODO external ref
+
+  // ---------
+  // endregion
 });
 
 test('Create a new report with associated file', async ({ page }) => {
