@@ -40,6 +40,7 @@ import {
   LinkOffOutlined,
   MergeOutlined,
   MoveToInboxOutlined,
+  RestoreOutlined,
   TransformOutlined,
 } from '@mui/icons-material';
 import { CloudRefreshOutline, LabelOutline } from 'mdi-material-ui';
@@ -1590,7 +1591,7 @@ class ToolBar extends Component {
                           color={warning ? 'warning' : 'primary'}
                           size="small"
                         >
-                          <MergeOutlined fontSize="small"/>
+                          <RestoreOutlined fontSize="small"/>
                         </IconButton>
                       </span>
                     </Tooltip>
