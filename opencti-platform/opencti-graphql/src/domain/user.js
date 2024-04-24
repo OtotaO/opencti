@@ -157,9 +157,8 @@ export const findById = async (context, user, userId) => {
   if (INTERNAL_USERS[userId]) {
     return INTERNAL_USERS[userId];
   }
-  const data = await storeLoadById(context, user, userId, ENTITY_TYPE_USER);
-  const withoutPassword = data ? R.dissoc('password', data) : data;
-  return buildCompleteUser(context, withoutPassword);
+  const data = await resolveUserByIdFromCache(context, userId);
+  return data ? R.dissoc('password', data) : data;
 };
 
 export const findAll = async (context, user, args) => {
@@ -1277,8 +1276,7 @@ export const resolveUserById = async (context, id) => {
 };
 
 const resolveUserByToken = async (context, tokenValue) => {
-  const client = await elLoadBy(context, SYSTEM_USER, 'api_token', tokenValue, ENTITY_TYPE_USER);
-  return buildCompleteUser(context, client);
+  return elLoadBy(context, SYSTEM_USER, 'api_token', tokenValue, ENTITY_TYPE_USER);
 };
 
 export const userRenewToken = async (context, user, userId) => {
@@ -1310,9 +1308,11 @@ const validateUser = (user, settings) => {
   }
 };
 
+const isNoSession = (req) => req.header('opencti-no-session') === '?1';
+
 export const internalAuthenticateUser = async (context, req, user, provider, { token, previousSession, isSessionRefresh }) => {
   let impersonate;
-  const logged = await buildCompleteUser(context, user);
+  const logged = await resolveUserByIdFromCache(context, user.internal_id);
   const settings = await getEntityFromCache(context, SYSTEM_USER, ENTITY_TYPE_SETTINGS);
   validateUser(logged, settings);
   const applicantId = req.headers['opencti-applicant-id'];
@@ -1334,19 +1334,21 @@ export const internalAuthenticateUser = async (context, req, user, provider, { t
     sessionUser.impersonate_user_id = previousSession.impersonate_user_id;
   }
   const userOrigin = userWithOrigin(req, sessionUser);
-  if (!isSessionRefresh) {
-    await publishUserAction({
-      user: userOrigin,
-      event_type: 'authentication',
-      event_access: 'administration',
-      event_scope: 'login',
-      context_data: { provider }
-    });
+  if (!isNoSession(req)) {
+    if (!isSessionRefresh) {
+      await publishUserAction({
+        user: userOrigin,
+        event_type: 'authentication',
+        event_access: 'administration',
+        event_scope: 'login',
+        context_data: { provider }
+      });
+    }
+    req.session.user = sessionUser;
+    req.session.session_provider = { provider, token };
+    req.session.session_refresh = false;
+    req.session.save();
   }
-  req.session.user = sessionUser;
-  req.session.session_provider = { provider, token };
-  req.session.session_refresh = false;
-  req.session.save();
   return userOrigin;
 };
 
@@ -1359,7 +1361,7 @@ export const HEADERS_AUTHENTICATORS = [];
 export const authenticateUserFromRequest = async (context, req, res, isSessionRefresh = false) => {
   const auth = req.session?.user;
   // If user already have a session
-  if (auth && !isSessionRefresh) {
+  if (auth && !isSessionRefresh && !isNoSession(req)) {
     // User already identified, we need to enforce the session validity
     const { provider, token } = req.session.session_provider;
     // For bearer, validate that the bearer is the same as the session
@@ -1494,7 +1496,7 @@ export const userEditContext = async (context, user, userId, input) => {
 // endregion
 
 export const getUserEffectiveConfidenceLevel = async (user, context) => {
-  // we load the user from cache to have the complete user with groupos
+  // we load the user from cache to have the complete user with groups
   const platformUsers = await getEntitiesMapFromCache(context, SYSTEM_USER, ENTITY_TYPE_USER);
   const cachedUser = platformUsers.get(user.id);
   let completeUser;
